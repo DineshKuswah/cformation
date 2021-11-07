@@ -16,7 +16,7 @@ Resources:
       VpcId:
         Ref: myVPC
       CidrBlock: 192.168.0.0/26
-      AvailabilityZone: "ap-south-1a"
+      AvailabilityZone: "us-eat-1a"
       Tags:
       - Key: Name
         Value: websubnet-01
@@ -27,7 +27,7 @@ Resources:
       VpcId:
         Ref: myVPC
       CidrBlock: 192.168.0.64/26
-      AvailabilityZone: "ap-south-1b"
+      AvailabilityZone: "us-east-1b"
       Tags:
       - Key: Name
         Value: devsubnet-01
