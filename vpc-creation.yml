@@ -1,0 +1,92 @@
+Resources:
+# This is my VPC
+  myVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 192.168.0.0/24
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'true'
+      Tags:
+       - Key: Name
+         Value: my-vpc01
+#This is my First Subnet (Public Subnet)
+  WebSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: myVPC
+      CidrBlock: 192.168.0.0/26
+      AvailabilityZone: "ap-south-1a"
+      Tags:
+      - Key: Name
+        Value: websubnet-01
+#This is my Second Subnet (Private Subnet)
+  DevSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: myVPC
+      CidrBlock: 192.168.0.64/26
+      AvailabilityZone: "ap-south-1b"
+      Tags:
+      - Key: Name
+        Value: devsubnet-01
+#This is my first Public Routing Table
+  WebRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:  
+        Ref: myVPC
+      Tags:
+      - Key: Name
+        Value: webRT
+ #This is my second Private Routing Table
+  DevRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:  
+        Ref: myVPC
+      Tags:
+      - Key: Name
+        Value: devRT
+#Associate WebRoute Table to WebSubnet
+  webSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: WebSubnet
+      RouteTableId:
+        Ref: WebRouteTable
+#Associate devRoute Table to devSubnet
+  devSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:
+        Ref: DevSubnet
+      RouteTableId:
+        Ref: DevRouteTable
+#Create IGW for VPC
+  myInternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: my-igw
+#Attach IGW to VPC
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+         Ref: myVPC
+      InternetGatewayId:
+         Ref: myInternetGateway
+#Add IGW route to webRT
+  myRoute:
+     Type: AWS::EC2::Route
+     DependsOn: WebRouteTable
+     Properties:
+        RouteTableId:
+          Ref: WebRouteTable
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId:
+          Ref: myInternetGateway   
