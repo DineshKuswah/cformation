@@ -16,7 +16,7 @@ Resources:
       VpcId:
         Ref: myVPC
       CidrBlock: 192.168.0.0/26
-      AvailabilityZone: "us-eat-1a"
+      AvailabilityZone: "us-east-1a"
       Tags:
       - Key: Name
         Value: websubnet-01
